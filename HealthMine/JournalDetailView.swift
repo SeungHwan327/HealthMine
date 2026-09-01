@@ -345,6 +345,11 @@ struct JournalDetailView: View {
         )
         dailyLogs[dateKey] = log
         
+        // 디스크(UserDefaults)에 즉시 영구 저장
+        if let encoded = try? JSONEncoder().encode(dailyLogs) {
+            UserDefaults.standard.set(encoded, forKey: "savedDailyLogs")
+        }
+        
         // 최상위 화면으로 한 번에 Pop
         path = NavigationPath()
     }

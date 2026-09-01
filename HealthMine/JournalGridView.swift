@@ -119,7 +119,7 @@ struct JournalGridView: View {
     
     private func dateKeyString(from date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "M/d"
+        formatter.dateFormat = "yyyy-MM-dd"
         return formatter.string(from: date)
     }
     

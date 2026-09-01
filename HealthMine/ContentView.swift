@@ -2,10 +2,16 @@ import SwiftUI
 
 // MARK: - 메인 ContentView (하단 탭 바: 단백질, 일지, 캘린더, 볼륨, 프로필)
 struct ContentView: View {
-    @State private var dailyLogs: [String: DailyLog] = [:]
-    @State private var userProfile = UserProfile()
+    // 1. 앱 시작 시 저장소에서 바로 데이터를 읽어와 초기화
+    @State private var dailyLogs: [String: DailyLog] = {
+        if let savedData = UserDefaults.standard.data(forKey: "savedDailyLogs"),
+           let decoded = try? JSONDecoder().decode([String: DailyLog].self, from: savedData) {
+            return decoded
+        }
+        return [:]
+    }()
     
-    // 1. 내비게이션 경로 관리를 위한 State 추가
+    @State private var userProfile = UserProfile()
     @State private var journalPath = NavigationPath()
     
     var body: some View {
@@ -19,7 +25,7 @@ struct ContentView: View {
                 Text("단백질")
             }
             
-            // 2. 일지 탭 (NavigationView -> NavigationStack 변경 및 destination 설정)
+            // 2. 일지 탭
             NavigationStack(path: $journalPath) {
                 ScrollView {
                     VStack(spacing: 20) {
@@ -28,7 +34,6 @@ struct ContentView: View {
                     .padding(.bottom, 20)
                 }
                 .navigationTitle("운동 일지")
-                // 2. WorkoutRoute 값에 반응하는 이동 목적지 정의
                 .navigationDestination(for: WorkoutRoute.self) { route in
                     switch route {
                     case .typeSelection(let dateKey):
@@ -68,7 +73,7 @@ struct ContentView: View {
                 Text("캘린더")
             }
             
-            // 4. 볼륨 탭 (VolumeView 연동)
+            // 4. 볼륨 탭
             NavigationView {
                 VolumeView(dailyLogs: $dailyLogs, userWeight: userProfile.weight)
             }
@@ -83,6 +88,13 @@ struct ContentView: View {
                     Image(systemName: "person.fill")
                     Text("프로필")
                 }
+        }
+    }
+    
+    // MARK: - Persistence Logic (저장 함수)
+    func saveLogsToDisk() {
+        if let encoded = try? JSONEncoder().encode(dailyLogs) {
+            UserDefaults.standard.set(encoded, forKey: "savedDailyLogs")
         }
     }
 }
