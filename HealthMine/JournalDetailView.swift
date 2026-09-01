@@ -252,7 +252,7 @@ struct JournalDetailView: View {
                                             .frame(width: 45, alignment: .leading)
                                         
                                         TextField("무게", text: $exercise.sets[setIndex].weight)
-                                            .keyboardType(.numberPad)
+                                            .keyboardType(.decimalPad)
                                             .textFieldStyle(.roundedBorder)
                                         Text("kg")
                                             .font(.caption)
