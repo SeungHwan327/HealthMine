@@ -44,8 +44,3 @@ struct DailyLog: Codable, Hashable {
         exercises.reduce(0) { $0 + $1.calculateTotalVolume(userWeight: userWeight) }
     }
 }
-
-// 프로필 데이터
-struct UserProfile: Codable {
-    var weight: Double = 70.0 // 기본 체중 설정 (kg)
-}

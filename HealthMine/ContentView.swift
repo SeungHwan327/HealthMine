@@ -11,7 +11,7 @@ struct ContentView: View {
         return [:]
     }()
     
-    @State private var userProfile = UserProfile()
+    @State private var userProfile = UserProfile.load()
     @State private var journalPath = NavigationPath()
     
     var body: some View {
@@ -35,14 +35,39 @@ struct ContentView: View {
                 }
                 .navigationTitle("운동 일지")
                 .navigationDestination(for: WorkoutRoute.self) { route in
+
                     switch route {
+
+                    case .splitSelection(let dateKey):
+
+                        WorkoutSplitSelectionView(
+                            dateKey: dateKey,
+                            path: $journalPath
+                        )
+
                     case .typeSelection(let dateKey):
+
                         WorkoutTypeSelectionView(
                             dateKey: dateKey,
                             dailyLogs: $dailyLogs,
                             path: $journalPath
                         )
-                    case .detail(let dateKey, let category, let booster, let exercises):
+
+                    case .fourSplitSelection(let dateKey):
+
+                        Workout4SplitSelectionView(
+                            dateKey: dateKey,
+                            dailyLogs: $dailyLogs,
+                            path: $journalPath
+                        )
+
+                    case .detail(
+                        let dateKey,
+                        let category,
+                        let booster,
+                        let exercises
+                    ):
+
                         JournalDetailView(
                             dateKey: dateKey,
                             dailyLogs: $dailyLogs,

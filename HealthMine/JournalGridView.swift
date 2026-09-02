@@ -71,7 +71,7 @@ struct JournalGridView: View {
                                     exercises: log.exercises
                                 )
                             } else {
-                                return .typeSelection(dateKey: dateKey)
+                                return .splitSelection(dateKey: dateKey)
                             }
                         }()
                         
