@@ -492,6 +492,7 @@ struct JournalDetailView: View {
     @State var workoutCategory: String
     @State var booster: String
     @State var exercises: [ExerciseItem]
+    @State private var showDeleteAlert = false
     
     init(dateKey: String, dailyLogs: Binding<[String: DailyLog]>, initialCategory: String, initialBooster: String, initialExercises: [ExerciseItem], path: Binding<NavigationPath>) {
         self.dateKey = dateKey
@@ -594,6 +595,20 @@ struct JournalDetailView: View {
                 }
             }
             
+            // 전체 내용 삭제 버튼
+            Button {
+                showDeleteAlert = true
+            } label: {
+                Text("전체 내용 삭제")
+                    .font(.headline)
+                    .foregroundColor(.red)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.red.opacity(0.1))
+                    .cornerRadius(12)
+            }
+            .padding(.horizontal)
+            
             // 운동 종료 버튼
             Button(action: finishWorkout) {
                 Text("운동 종료")
@@ -614,6 +629,21 @@ struct JournalDetailView: View {
         .navigationTitle("\(dateKey) 메모장")
         .navigationBarTitleDisplayMode(.inline)
         .environment(\.editMode, .constant(.active))
+        
+        //운동 일지 삭제
+        .alert(
+            "전체 내용을 삭제할까요?",
+            isPresented: $showDeleteAlert
+        ) {
+            Button("취소", role: .cancel) {
+            }
+            
+            Button("삭제", role: .destructive) {
+                deleteAllContent()
+            }
+        } message: {
+            Text("현재 날짜의 운동일지 내용이 모두 삭제됩니다.\n삭제한 내용은 복구할 수 없습니다.")
+        }
     }
     
     private func addExercise() {
@@ -629,6 +659,32 @@ struct JournalDetailView: View {
         exercises.move(fromOffsets: source, toOffset: destination)
     }
     
+    //삭제
+    private func deleteAllContent() {
+        
+        workoutCategory = ""
+        booster = ""
+        
+        exercises = [
+            ExerciseItem(
+                name: "",
+                sets: (1...4).map { _ in
+                    SetItem(weight: "", reps: "")
+                }
+            )
+        ]
+        
+        dailyLogs.removeValue(forKey: dateKey)
+        
+        if let encoded = try? JSONEncoder().encode(dailyLogs) {
+            UserDefaults.standard.set(
+                encoded,
+                forKey: "savedDailyLogs"
+            )
+        }
+    }
+    
+    //운동 종료
     private func finishWorkout() {
         let log = DailyLog(
             workoutCategory: workoutCategory,
