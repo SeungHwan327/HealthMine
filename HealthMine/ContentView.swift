@@ -84,21 +84,8 @@ struct ContentView: View {
                 Text("일지")
             }
             
-            // 3. 캘린더 탭
-            NavigationView {
-                VStack {
-                    Text("캘린더")
-                        .font(.largeTitle)
-                        .bold()
-                }
-                .navigationTitle("캘린더")
-            }
-            .tabItem {
-                Image(systemName: "calendar")
-                Text("캘린더")
-            }
             
-            // 4. 볼륨 탭
+            // 3. 볼륨 탭
             NavigationView {
                 VolumeView(dailyLogs: $dailyLogs, userWeight: userProfile.weight)
             }
@@ -107,7 +94,7 @@ struct ContentView: View {
                 Text("볼륨")
             }
             
-            // 5. 프로필 탭
+            // 4. 프로필 탭
             ProfileView(userProfile: $userProfile)
                 .tabItem {
                     Image(systemName: "person.fill")

@@ -595,31 +595,34 @@ struct JournalDetailView: View {
                 }
             }
             
-            // 전체 내용 삭제 버튼
-            Button {
-                showDeleteAlert = true
-            } label: {
-                Text("전체 내용 삭제")
-                    .font(.headline)
-                    .foregroundColor(.red)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.red.opacity(0.1))
-                    .cornerRadius(12)
+            HStack(spacing: 12) {
+
+                // 전체 내용 삭제 버튼
+                Button {
+                    showDeleteAlert = true
+                } label: {
+                    Text("전체 내용 삭제")
+                        .font(.headline)
+                        .foregroundColor(.red)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.red.opacity(0.1))
+                        .cornerRadius(12)
+                }
+
+                // 운동 종료 버튼
+                Button(action: finishWorkout) {
+                    Text("운동 종료")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(12)
+                }
             }
             .padding(.horizontal)
-            
-            // 운동 종료 버튼
-            Button(action: finishWorkout) {
-                Text("운동 종료")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .cornerRadius(12)
-            }
-            .padding()
+            .padding(.vertical, 8)
             .background(Color(.systemGroupedBackground))
         }
         .contentShape(Rectangle())
