@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ProteinView: View {
 
-    @StateObject private var proteinManager = ProteinManager()
+    @ObservedObject var proteinManager: ProteinManager
     @State private var userProfile = UserProfile.load()
 
     @State private var showAddProtein = false
@@ -575,6 +575,7 @@ struct ProteinView: View {
 // MARK: - Preview
 
 #Preview {
-
-    ProteinView()
+    ProteinView(
+        proteinManager: ProteinManager()
+    )
 }

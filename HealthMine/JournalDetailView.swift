@@ -26,6 +26,8 @@ struct MainJournalView: View {
     let userProfile: UserProfile
     
     @State private var path = NavigationPath()
+    @ObservedObject var proteinManager: ProteinManager
+
     
     // YYYY-MM-dd 날짜 포맷
     private var todayKey: String {
@@ -60,7 +62,11 @@ struct MainJournalView: View {
                     }
                     
                     // 커스텀 일지 그리드 뷰 연동
-                    JournalGridView(dailyLogs: $dailyLogs, userWeight: userProfile.weight)
+                    JournalGridView(
+                        dailyLogs: $dailyLogs,
+                        userWeight: userProfile.weight,
+                        proteinManager: proteinManager
+                    )
                     
                     Spacer()
                     

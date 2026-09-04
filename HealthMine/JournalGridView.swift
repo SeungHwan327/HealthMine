@@ -5,7 +5,7 @@ struct JournalGridView: View {
     @Binding var dailyLogs: [String: DailyLog]
     var userWeight: Double
     
-    @StateObject private var proteinManager = ProteinManager()
+    @ObservedObject var proteinManager: ProteinManager
     
     // 내부에서 사용할 달력 현재 날짜 상태
     @State private var currentDate = Date()
@@ -55,63 +55,109 @@ struct JournalGridView: View {
             LazyVGrid(columns: columns, spacing: 6) {
                 ForEach(generateDaysInMonth(for: currentDate), id: \.self) { dateItem in
                     if let date = dateItem {
+
                         let dateKey = dateKeyString(from: date)
+
                         let dayNum = Calendar.current.component(.day, from: date)
+
                         let isToday = Calendar.current.isDateInToday(date)
+
                         let log = dailyLogs[dateKey]
+
                         let protein = proteinManager.protein(for: date)
-                        
-                        // 기존에 저장된 일지가 있는지 확인
+
                         let existingLog = dailyLogs[dateKey]
 
-                        // 작성된 일지가 있으면 detail, 없으면 typeSelection으로 분기
                         let route: WorkoutRoute = {
+
                             if let log = existingLog {
+
                                 return .detail(
                                     dateKey: dateKey,
                                     category: log.workoutCategory,
                                     booster: log.booster,
                                     exercises: log.exercises
                                 )
+
                             } else {
+
                                 return .splitSelection(dateKey: dateKey)
+
                             }
+
                         }()
-                        
-                        // 날짜 클릭 시 -> 분할 선택 화면(WorkoutTypeSelectionView)으로 이동
+
                         NavigationLink(value: route) {
-                            VStack(alignment: .leading, spacing: 2) {
+
+                            VStack(
+                                alignment: .leading,
+                                spacing: 2
+                            ) {
+
                                 Text("\(dayNum)")
                                     .font(.caption2)
                                     .bold()
-                                    .foregroundColor(isToday ? .white : .primary)
+                                    .foregroundColor(
+                                        isToday ? .white : .primary
+                                    )
                                     .padding(4)
-                                    .background(isToday ? Circle().fill(Color.blue) : Circle().fill(Color.clear))
-                                
-                                if let log = log, !log.workoutCategory.isEmpty {
+                                    .background(
+                                        isToday
+                                        ? Circle().fill(Color.blue)
+                                        : Circle().fill(Color.clear)
+                                    )
+
+
+                                // 운동 기록
+
+                                if let log = log,
+                                   !log.workoutCategory.isEmpty {
+
                                     Text(log.workoutCategory)
                                         .font(.system(size: 9))
                                         .foregroundColor(.blue)
                                         .bold()
                                         .lineLimit(2)
                                         .padding(.horizontal, 2)
+
                                 }
-                                
+
+
+                                // 단백질 기록
+
                                 if protein > 0 {
-                                    Text("\(String(format: "%.0f", protein))g")
-                                        .font(.system(size: 9))
-                                        .foregroundColor(.blue)
-                                        .bold()
-                                        .padding(.horizontal, 2)
+
+                                    HStack(spacing: 2) {
+
+                                        Image(systemName: "fork.knife")
+
+                                        Text(
+                                            "\(String(format: "%.0f", protein))g"
+                                        )
+
+                                    }
+                                    .font(.system(size: 8))
+                                    .foregroundColor(.blue)
+                                    .bold()
+                                    .padding(.horizontal, 2)
+
                                 }
-                                
+
                                 Spacer(minLength: 0)
+
                             }
-                            .frame(height: 65)
-                            .frame(maxWidth: .infinity, alignment: .topLeading)
-                            .background(Color(.secondarySystemBackground))
+                            .frame(height: 70)
+                            .frame(
+                                maxWidth: .infinity,
+                                alignment: .topLeading
+                            )
+                            .background(
+                                Color(.secondarySystemBackground)
+                            )
                             .cornerRadius(6)
+
                         }
+
                     } else {
                         Color.clear.frame(height: 65)
                     }
@@ -164,6 +210,7 @@ struct JournalGridView: View {
 #Preview {
     JournalGridView(
         dailyLogs: .constant([:]),
-        userWeight: 70.0
+        userWeight: 70.0,
+        proteinManager: ProteinManager()
     )
 }

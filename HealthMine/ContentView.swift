@@ -13,12 +13,15 @@ struct ContentView: View {
     
     @State private var userProfile = UserProfile.load()
     @State private var journalPath = NavigationPath()
+    @StateObject private var proteinManager = ProteinManager()
     
     var body: some View {
         TabView {
             // 1. 단백질 탭
             NavigationView {
-                ProteinView()
+                ProteinView(
+                        proteinManager: proteinManager
+                    )
             }
             .tabItem {
                 Image(systemName: "fork.knife")
@@ -29,7 +32,11 @@ struct ContentView: View {
             NavigationStack(path: $journalPath) {
                 ScrollView {
                     VStack(spacing: 20) {
-                        JournalGridView(dailyLogs: $dailyLogs, userWeight: userProfile.weight)
+                        JournalGridView(
+                                dailyLogs: $dailyLogs,
+                                userWeight: userProfile.weight,
+                                proteinManager: proteinManager
+                            )
                     }
                     .padding(.bottom, 20)
                 }
