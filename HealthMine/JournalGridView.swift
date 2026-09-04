@@ -5,6 +5,8 @@ struct JournalGridView: View {
     @Binding var dailyLogs: [String: DailyLog]
     var userWeight: Double
     
+    @StateObject private var proteinManager = ProteinManager()
+    
     // 내부에서 사용할 달력 현재 날짜 상태
     @State private var currentDate = Date()
     
@@ -57,6 +59,7 @@ struct JournalGridView: View {
                         let dayNum = Calendar.current.component(.day, from: date)
                         let isToday = Calendar.current.isDateInToday(date)
                         let log = dailyLogs[dateKey]
+                        let protein = proteinManager.protein(for: date)
                         
                         // 기존에 저장된 일지가 있는지 확인
                         let existingLog = dailyLogs[dateKey]
@@ -91,6 +94,14 @@ struct JournalGridView: View {
                                         .foregroundColor(.blue)
                                         .bold()
                                         .lineLimit(2)
+                                        .padding(.horizontal, 2)
+                                }
+                                
+                                if protein > 0 {
+                                    Text("\(String(format: "%.0f", protein))g")
+                                        .font(.system(size: 9))
+                                        .foregroundColor(.blue)
+                                        .bold()
                                         .padding(.horizontal, 2)
                                 }
                                 
