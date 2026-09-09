@@ -12,7 +12,7 @@
 
 ## ✨ Features
 
-### 📝 Workout Log
+### 📝 Workout Log 
 
 * 날짜별 운동 기록 관리
 * Push / Pull / Legs(PPL) 운동 분할
